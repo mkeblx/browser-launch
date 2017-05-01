@@ -59,6 +59,12 @@
             android:text="Launch Samsung Internet (Gear VR)" />
 
         <Button
+            android:id="@+id/sicustomLaunch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="LAUNCH SI Custom Tab" />
+
+        <Button
             android:id="@+id/oculusLaunch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

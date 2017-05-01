@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
         // setup Samsung custom tab behavior
         mServiceConnection = new ServiceConnection(null);
-        
+
         Intent serviceIntent = new Intent(SI_CUSTOM_TABS_CONNECTION);
         serviceIntent.setPackage(PACKAGE_SI);
         bindService(serviceIntent, mServiceConnection, Context.BIND_AUTO_CREATE |
@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         intent.setPackage(PACKAGE_SI);
 
         final String CUSTOM_TABS_TOOLBAR_COLOR = "android.support.customtabs.extra.TOOLBAR_COLOR";
-        int color = Color.MAGENTA; // todo: change to SI purple
+        int color = Color.parseColor("#6141e3");
         intent.putExtra(CUSTOM_TABS_TOOLBAR_COLOR, color);
 
         return intent;

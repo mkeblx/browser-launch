@@ -22,8 +22,11 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "LaunchIntent";
 
-    public static final String PACKAGE_SI_GEARVR = "com.sec.samsung.svrbrowser";
-    public static final String ACTIVITY_SI_GEARVR = PACKAGE_SI_GEARVR+".UnityPlayerActivity";
+    public static final String PACKAGE_SI = "com.sec.android.app.sbrowser";
+
+    public static final String PACKAGE_SI_GEARVR = "com.sec.android.app.svrbrowser";
+    public static final String ACTIVITY_SI_GEARVR = PACKAGE_SI_GEARVR+".UnityPlayerNativeActivity";
+    // can get rid of 'Native'?
 
     public static final String PACKAGE_VRSHELL = "com.oculus.vrshell";
     public static final String ACTIVITY_VRSHELL = PACKAGE_VRSHELL+".MainActivity";

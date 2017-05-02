@@ -24,6 +24,7 @@ import android.support.customtabs.CustomTabsClient;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.customtabs.CustomTabsServiceConnection;
 import android.support.customtabs.CustomTabsSession;
+import android.widget.RadioButton;
 
 import java.util.regex.Pattern;
 
@@ -33,16 +34,15 @@ public class MainActivity extends AppCompatActivity {
 
     static final String PACKAGE_SI = "com.sec.android.app.sbrowser";
     static final String PACKAGE_SI_BETA = "com.sec.android.app.sbrowser.beta";
+    static final String PACKAGE_SI_GEARVR = "com.sec.android.app.svrbrowser";
+    static final String ACTIVITY_SI_GEARVR = PACKAGE_SI_GEARVR+".UnityPlayerNativeActivity";
+    // can get rid of 'Native'?
 
     // custom tab
     static final String SI_CUSTOM_TABS_CONNECTION =
             "android.support.customtabs.action.CustomTabsService";
     static final String CUSTOM_TABS_TOOLBAR_COLOR = "android.support.customtabs.extra.TOOLBAR_COLOR";
     static final String EXTRA_SESSION = "android.support.customtabs.extra.SESSION";
-
-    static final String PACKAGE_SI_GEARVR = "com.sec.android.app.svrbrowser";
-    static final String ACTIVITY_SI_GEARVR = PACKAGE_SI_GEARVR+".UnityPlayerNativeActivity";
-    // can get rid of 'Native'?
 
     static final String PACKAGE_CHROME = "com.android.chrome";
     static final String PACKAGE_CHROME_BETA = "com.chrome.beta";
@@ -83,6 +83,12 @@ public class MainActivity extends AppCompatActivity {
         Button simbetaBtn = (Button) findViewById(R.id.simbetaLaunch);
         Button oculusBtn = (Button) findViewById(R.id.oculusLaunch);
         Button cctBtn = (Button) findViewById(R.id.cctLaunch);
+
+        final RadioButton stableC = (RadioButton) findViewById(R.id.stableC);
+        final RadioButton betaC = (RadioButton) findViewById(R.id.betaC);
+        final RadioButton devC = (RadioButton) findViewById(R.id.devC);
+        final RadioButton canaryC = (RadioButton) findViewById(R.id.canaryC);
+
 
         siBtn.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -133,7 +139,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String url = urlText.getText().toString();
-                Intent intent = getChromeCustomTabIntent(url);
+
+                String pkg = stableC.isChecked() ? PACKAGE_CHROME : "";
+                pkg = betaC.isChecked() ? PACKAGE_CHROME_BETA : "";
+                pkg = devC.isChecked() ? PACKAGE_CHROME_DEV : "";
+                pkg = canaryC.isChecked() ? PACKAGE_CHROME_CANARY : "";
+
+                Intent intent = getChromeCustomTabIntent(url, pkg);
                 launchActivity(intent);
             }
         });
@@ -150,8 +162,53 @@ public class MainActivity extends AppCompatActivity {
 
         if (!isPackageInstalled(PACKAGE_SI_GEARVR))
             siBtn.setEnabled(false);
-        if (!isPackageInstalled(PACKAGE_VRSHELL) || !isPackageInstalled(PACKAGE_OCULUS_BROWSER))
+
+        if (!isPackageInstalled(PACKAGE_SI)) {
+            simBtn.setEnabled(false);
+        } else {
+            simBtn.setText(simBtn.getText()+" - "+getVersionNumber(PACKAGE_SI));
+        }
+
+        if (!isPackageInstalled(PACKAGE_SI_BETA)) {
+            simbetaBtn.setEnabled(false);
+        } else {
+            simbetaBtn.setText(simbetaBtn.getText()+" - "+getVersionNumber(PACKAGE_SI_BETA));
+        }
+
+        if (!isPackageInstalled(PACKAGE_VRSHELL) || !isPackageInstalled(PACKAGE_OCULUS_BROWSER)) {
             oculusBtn.setEnabled(false);
+        } else {
+            oculusBtn.setText(oculusBtn.getText()+" - "+getVersionNumber(PACKAGE_OCULUS_BROWSER));
+        }
+
+
+        if (!isPackageInstalled(PACKAGE_CHROME) && !isPackageInstalled(PACKAGE_CHROME_BETA)) {
+            cctBtn.setEnabled(false);
+        }
+
+        if (!isPackageInstalled(PACKAGE_CHROME)) {
+            stableC.setEnabled(false);
+        } else {
+            stableC.setChecked(true);
+            stableC.setText("Stable:"+getVersionNumber(PACKAGE_CHROME).substring(0,2));
+        }
+        if (!isPackageInstalled(PACKAGE_CHROME_BETA)) {
+            betaC.setEnabled(false);
+        } else {
+            betaC.setText("Beta:"+getVersionNumber(PACKAGE_CHROME_BETA).substring(0,2));
+        }
+        if (!isPackageInstalled(PACKAGE_CHROME_DEV)) {
+            devC.setEnabled(false);
+        } else {
+            devC.setText("Dev:"+getVersionNumber(PACKAGE_CHROME_DEV).substring(0,2));
+        }
+        if (!isPackageInstalled(PACKAGE_CHROME_CANARY)) {
+            canaryC.setEnabled(false);
+        } else {
+            canaryC.setText("Can:"+getVersionNumber(PACKAGE_CHROME_CANARY).substring(0,2));
+        }
+
+
         // TODO: disabled custom tab behavior if not available
 
     }
@@ -212,15 +269,11 @@ public class MainActivity extends AppCompatActivity {
         return intent;
     }
 
-    public Intent getChromeCustomTabIntent(String uri) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+    public Intent getChromeCustomTabIntent(String uri, String pkg) {
+        if (pkg.equals(""))
+            pkg = PACKAGE_CHROME;
 
-        // Extra used to match the session.
-        Bundle extras = new Bundle();
-        extras.putBinder(EXTRA_SESSION, null);
-        intent.putExtras(extras);
-        intent.setData(Uri.parse(uri));
-        intent.setPackage(PACKAGE_CHROME_CANARY);
+        Intent intent = createCustomTabIntent(pkg, uri);
 
         int color = Color.parseColor("#00933B");
         intent.putExtra(CUSTOM_TABS_TOOLBAR_COLOR, color);
@@ -244,6 +297,18 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "Launching activity: " + intent.getPackage());
         startActivity(intent);
         return true;
+    }
+
+    public String getVersionNumber(String pkg) {
+        String version = "";
+        PackageManager pm = getPackageManager();
+        try {
+            PackageInfo pi = pm.getPackageInfo(pkg, 0);
+            version = pi.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.d(TAG, "package not found");
+        }
+        return version;
     }
 
     public boolean isPackageInstalled(String pkg) {

@@ -71,13 +71,15 @@ public class MainActivity extends AppCompatActivity {
 
         Button siBtn = (Button) findViewById(R.id.siLaunch);
         Button sicustomBtn = (Button) findViewById(R.id.sicustomLaunch);
+        Button simBtn = (Button) findViewById(R.id.simLaunch);
+        Button simbetaBtn = (Button) findViewById(R.id.simbetaLaunch);
         Button oculusBtn = (Button) findViewById(R.id.oculusLaunch);
 
         siBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 String url = urlText.getText().toString();
-                Intent intent = getSIIntent(url);
+                Intent intent = getSIGearVRIntent(url);
                 launchActivity(intent);
             }
         });
@@ -87,6 +89,24 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String url = urlText.getText().toString();
                 Intent intent = getSICustomTabIntent(url);
+                launchActivity(intent);
+            }
+        });
+
+        simBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                String url = urlText.getText().toString();
+                Intent intent = getSIIntent(url);
+                launchActivity(intent);
+            }
+        });
+
+        simbetaBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                String url = urlText.getText().toString();
+                Intent intent = getSIBetaIntent(url);
                 launchActivity(intent);
             }
         });
@@ -114,10 +134,11 @@ public class MainActivity extends AppCompatActivity {
             siBtn.setEnabled(false);
         if (!isPackageInstalled(PACKAGE_VRSHELL) || !isPackageInstalled(PACKAGE_OCULUS_BROWSER))
             oculusBtn.setEnabled(false);
+        // TODO: disabled custom tab behavior if not available
 
     }
 
-    public Intent getSIIntent(String uri) {
+    public Intent getSIGearVRIntent(String uri) {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_MAIN);
         intent.setClassName(PACKAGE_SI_GEARVR, ACTIVITY_SI_GEARVR);
@@ -125,6 +146,22 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("isValid", "valid");
         intent.putExtra("currentURL", uri);
 
+        return intent;
+    }
+
+    public Intent getSIIntent(String uri) {
+        Intent intent = new Intent();
+        intent.setPackage(PACKAGE_SI);
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(uri));
+        return intent;
+    }
+
+    public Intent getSIBetaIntent(String uri) {
+        Intent intent = new Intent();
+        intent.setPackage(PACKAGE_SI_BETA);
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(uri));
         return intent;
     }
 

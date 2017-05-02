@@ -65,6 +65,18 @@
             android:text="LAUNCH SI Custom Tab" />
 
         <Button
+            android:id="@+id/simLaunch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Launch Samsung Internet" />
+
+        <Button
+            android:id="@+id/simbetaLaunch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="launch samsung internet beta" />
+
+        <Button
             android:id="@+id/oculusLaunch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

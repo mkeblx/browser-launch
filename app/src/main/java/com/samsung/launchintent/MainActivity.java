@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
     static final String PACKAGE_CHROME = "com.android.chrome";
     static final String PACKAGE_CHROME_BETA = "com.chrome.beta";
+    static final String PACKAGE_CHROME_DEV = "com.chrome.dev";
+    static final String PACKAGE_CHROME_CANARY = "com.chrome.canary";
     static final String PACKAGE_CHROME_LOCAL = "com.google.android.apps.chrome";
 
     static final String PACKAGE_VRSHELL = "com.oculus.vrshell";
@@ -218,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
         extras.putBinder(EXTRA_SESSION, null);
         intent.putExtras(extras);
         intent.setData(Uri.parse(uri));
-        intent.setPackage(PACKAGE_CHROME);
+        intent.setPackage(PACKAGE_CHROME_CANARY);
 
         int color = Color.parseColor("#00933B");
         intent.putExtra(CUSTOM_TABS_TOOLBAR_COLOR, color);

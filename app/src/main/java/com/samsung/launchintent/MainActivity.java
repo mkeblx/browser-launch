@@ -29,29 +29,35 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String TAG = "LaunchIntent";
+    static final String TAG = "LaunchIntent";
 
-    public static final String PACKAGE_SI = "com.sec.android.app.sbrowser";
-    public static final String PACKAGE_SI_BETA = "com.sec.android.app.sbrowser.beta";
+    static final String PACKAGE_SI = "com.sec.android.app.sbrowser";
+    static final String PACKAGE_SI_BETA = "com.sec.android.app.sbrowser.beta";
 
-    public static final String SI_CUSTOM_TABS_CONNECTION =
+    // custom tab
+    static final String SI_CUSTOM_TABS_CONNECTION =
             "android.support.customtabs.action.CustomTabsService";
+    static final String CUSTOM_TABS_TOOLBAR_COLOR = "android.support.customtabs.extra.TOOLBAR_COLOR";
+    static final String EXTRA_SESSION = "android.support.customtabs.extra.SESSION";
 
-    public static final String PACKAGE_SI_GEARVR = "com.sec.android.app.svrbrowser";
-    public static final String ACTIVITY_SI_GEARVR = PACKAGE_SI_GEARVR+".UnityPlayerNativeActivity";
+    static final String PACKAGE_SI_GEARVR = "com.sec.android.app.svrbrowser";
+    static final String ACTIVITY_SI_GEARVR = PACKAGE_SI_GEARVR+".UnityPlayerNativeActivity";
     // can get rid of 'Native'?
 
-    public static final String PACKAGE_VRSHELL = "com.oculus.vrshell";
-    public static final String ACTIVITY_VRSHELL = PACKAGE_VRSHELL+".MainActivity";
+    static final String PACKAGE_CHROME = "com.android.chrome";
+    static final String PACKAGE_CHROME_BETA = "com.chrome.beta";
+    static final String PACKAGE_CHROME_LOCAL = "com.google.android.apps.chrome";
 
-    public static final String PACKAGE_OCULUS_BROWSER = "com.oculus.browser";
+    static final String PACKAGE_VRSHELL = "com.oculus.vrshell";
+    static final String ACTIVITY_VRSHELL = PACKAGE_VRSHELL+".MainActivity";
 
-    public static final String DEFAULT_URL = "https://webvr.info/samples/";
+    static final String PACKAGE_OCULUS_BROWSER = "com.oculus.browser";
+
+    static final String DEFAULT_URL = "https://webvr.info/samples/";
 
 
-    public static CustomTabsServiceConnection mServiceConnection;
-
-    private ServiceConnectionCallback mConnectionCallback;
+    static CustomTabsServiceConnection mServiceConnection;
+    static ServiceConnectionCallback mConnectionCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         Button simBtn = (Button) findViewById(R.id.simLaunch);
         Button simbetaBtn = (Button) findViewById(R.id.simbetaLaunch);
         Button oculusBtn = (Button) findViewById(R.id.oculusLaunch);
+        Button cctBtn = (Button) findViewById(R.id.cctLaunch);
 
         siBtn.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -116,6 +123,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String url = urlText.getText().toString();
                 Intent intent = getOculusIntent(url);
+                launchActivity(intent);
+            }
+        });
+
+        cctBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                String url = urlText.getText().toString();
+                Intent intent = getChromeCustomTabIntent(url);
                 launchActivity(intent);
             }
         });
@@ -182,16 +198,42 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
 
         // Extra used to match the session.
-        final String EXTRA_SESSION = "android.support.customtabs.extra.SESSION";
         Bundle extras = new Bundle();
         extras.putBinder(EXTRA_SESSION, null);
         intent.putExtras(extras);
         intent.setData(Uri.parse(uri));
         intent.setPackage(PACKAGE_SI);
 
-        final String CUSTOM_TABS_TOOLBAR_COLOR = "android.support.customtabs.extra.TOOLBAR_COLOR";
         int color = Color.parseColor("#6141e3");
         intent.putExtra(CUSTOM_TABS_TOOLBAR_COLOR, color);
+
+        return intent;
+    }
+
+    public Intent getChromeCustomTabIntent(String uri) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+
+        // Extra used to match the session.
+        Bundle extras = new Bundle();
+        extras.putBinder(EXTRA_SESSION, null);
+        intent.putExtras(extras);
+        intent.setData(Uri.parse(uri));
+        intent.setPackage(PACKAGE_CHROME);
+
+        int color = Color.parseColor("#00933B");
+        intent.putExtra(CUSTOM_TABS_TOOLBAR_COLOR, color);
+
+        return intent;
+    }
+
+    public Intent createCustomTabIntent(String pkg, String uri) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+
+        Bundle extras = new Bundle();
+        extras.putBinder(EXTRA_SESSION, null);
+        intent.putExtras(extras);
+        intent.setData(Uri.parse(uri));
+        intent.setPackage(pkg);
 
         return intent;
     }

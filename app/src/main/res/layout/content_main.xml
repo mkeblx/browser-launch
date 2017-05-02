@@ -74,13 +74,19 @@
             android:id="@+id/simbetaLaunch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="launch samsung internet beta" />
+            android:text="launch samsung internet - beta" />
 
         <Button
             android:id="@+id/oculusLaunch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Launch Oculus Browser" />
+
+        <Button
+            android:id="@+id/cctLaunch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Launch Chrome Custom Tab" />
 
     </LinearLayout>
 
